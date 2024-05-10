@@ -1,7 +1,7 @@
 import numpy as np
 import math
 
-EPSILON = 1e-6
+HIT_TOLERANCE = 1e-5
 
 def degrees_to_radians(degrees:float) -> float:
     return degrees * math.pi / 180.0

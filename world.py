@@ -9,11 +9,12 @@ class World:
         # TODO: save camera object to get its center and calculate hit distance
 
     def get_nearest_hit(self, ray) -> Hit | None:
-        neareast_hit:Hit | None = None
+        neareast_hit = None
 
-        for index, hittable in enumerate(self.hittables):
-            print(f"{index}")
-            time.sleep(0.3)
+        for hittable in self.hittables:
+            # current_hit = hittable.intersects(ray)
+            # neareast_hit = current_hit
+            # print(f"{index}")
             current_hit: Hit | None = hittable.intersects(ray)
 
             # If ray hitted object
@@ -27,4 +28,5 @@ class World:
                     if current_hit.distance_to_origin() < neareast_hit.distance_to_origin():
                         neareast_hit = current_hit
         
+        # # time.sleep(0.3)
         return neareast_hit

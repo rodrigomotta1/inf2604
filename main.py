@@ -9,14 +9,22 @@ from sphere import Sphere
 from world import World
 from hit import Hit
 from hittable import Hittable
+from plane import Plane
 
 def ray_color(ray:Ray, world:World) -> np.ndarray:
     hit:Hit | None = world.get_nearest_hit(ray)
+
     if hit:
-        print(f"a")
-        return 0.5 * (hit.normal + np.array([1.0, 1.0, 1.0]))
+        # print(f"a")
+        # n = normalize(ray.at(hit) - np.array([0.0, 0.0, -1.0]))
+        return 0.5 * np.array([
+            hit.normal[0] + 1,
+            hit.normal[1] + 1,
+            hit.normal[2] + 1,
+        ])
+        # return 0.5 * (hit.normal + np.array([1.0, 1.0, 1.0]))
     else:
-        print(f"b")
+        # print(f"b")
         return np.array([0.0, 0.0, 0.0])
 
 def main():
@@ -44,7 +52,8 @@ def main():
     # World
     world = World([
         Hittable(surface=Sphere(np.array([0.0, 0.0, -1.0]), 0.5)),
-        Hittable(surface=Sphere(np.array([0.0, -100.5, -1.0]), 100))
+        Hittable(surface=Sphere(np.array([2.0, 0.0, -3.0]), 0.5)),
+        Hittable(surface=Plane(np.array([0.0, 3.0, 0.0]), np.array([0.0, 1.0, 0.0])))
     ])
 
     # Render
