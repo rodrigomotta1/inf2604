@@ -1,4 +1,10 @@
 import numpy as np
+import math
+
+EPSILON = 1e-6
+
+def degrees_to_radians(degrees:float) -> float:
+    return degrees * math.pi / 180.0
 
 def write_color(pixel_color: np.ndarray) -> np.ndarray:
     """

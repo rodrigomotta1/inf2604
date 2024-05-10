@@ -1,14 +1,23 @@
 import numpy as np
-import time
+import math
 
 from tqdm import tqdm
 from PIL import Image
 from utils import write_color, normalize
 from ray import Ray
+from sphere import Sphere
+from world import World
+from hit import Hit
+from hittable import Hittable
 
-
-def ray_color(ray):
-    return np.array([0.0, 0.0, 0.0])
+def ray_color(ray:Ray, world:World) -> np.ndarray:
+    hit:Hit | None = world.get_nearest_hit(ray)
+    if hit:
+        print(f"a")
+        return 0.5 * (hit.normal + np.array([1.0, 1.0, 1.0]))
+    else:
+        print(f"b")
+        return np.array([0.0, 0.0, 0.0])
 
 def main():
     # Image
@@ -31,6 +40,12 @@ def main():
     viewport_upper_left:np.ndarray = camera_center - np.array([0.0, 0.0, focal_length]) - (viewport_u / 2) - (viewport_v / 2)
 
     pixel_00_loc = viewport_upper_left + 0.5 * (pixel_delta_u + pixel_delta_v) # TODO: This 0.5 need to be changed in order to make sampling
+    
+    # World
+    world = World([
+        Hittable(surface=Sphere(np.array([0.0, 0.0, -1.0]), 0.5)),
+        Hittable(surface=Sphere(np.array([0.0, -100.5, -1.0]), 100))
+    ])
 
     # Render
     pixels = np.zeros((image_height, image_width, 3), dtype=np.uint8)
@@ -44,7 +59,7 @@ def main():
             pixel_center:np.ndarray = pixel_00_loc + (i * pixel_delta_u) + (j * pixel_delta_v)
             ray = Ray(camera_center, pixel_center - camera_center)
 
-            pixels[j, i] = ray_color(ray)
+            pixels[j, i] = write_color(ray_color(ray, world))
 
             _progress_bar.update(1)
 
