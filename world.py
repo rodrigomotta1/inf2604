@@ -12,9 +12,6 @@ class World:
         neareast_hit = None
 
         for hittable in self.hittables:
-            # current_hit = hittable.intersects(ray)
-            # neareast_hit = current_hit
-            # print(f"{index}")
             current_hit: Hit | None = hittable.intersects(ray)
 
             # If ray hitted object
@@ -28,5 +25,4 @@ class World:
                     if current_hit.distance_to_origin() < neareast_hit.distance_to_origin():
                         neareast_hit = current_hit
         
-        # # time.sleep(0.3)
         return neareast_hit

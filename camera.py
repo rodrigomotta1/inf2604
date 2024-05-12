@@ -1,13 +1,13 @@
-import numpy as np
 import utils
+import numpy as np
 
-from ray import Ray
-from world import World
 from hit import Hit
-from tqdm import tqdm
 from PIL import Image
+from ray import Ray
+from tqdm import tqdm
+from world import World
 
-
+# NOTE: Maybe create a function to get position of pixel based on input i, j (function receives pixel position i, j and returns its 3D position)
 class Camera:
     def __init__(
             self, 
@@ -16,6 +16,7 @@ class Camera:
             width:int = 400,
             center:np.ndarray = np.array([0.0, 0.0, 0.0]),
             focal_lenght:float = 1.0,
+            samples_per_pixel:int = 10,
 
         ) -> None:
         # Default data
@@ -24,6 +25,10 @@ class Camera:
         self.aspect_ratio = aspect_ratio
         self.center = center
         self.focal_length = focal_lenght
+
+        # Sampling rate
+        self.samples_per_pixel = samples_per_pixel
+        self._pixel_samples_scale = 1.0 / self.samples_per_pixel
 
         # Determine viewport dimensions
         self.height:int = int(self.width / self.aspect_ratio)
@@ -51,17 +56,29 @@ class Camera:
         """
         Cast rays and evaluates each color through auxiliary utility function
         """
-        _t_iter:int = self.height * self.width
+        _t_iter:int = self.height * self.width * self.samples_per_pixel
         _progress_bar = tqdm(total=_t_iter, desc="Progress", unit="iter")
 
         for j in range(0, self.height):
             for i in range(0, self.width):
-                pixel_center:np.ndarray = self.pixel_00_location + (i * self.pixel_delta_u) + (j * self.pixel_delta_v)
-                ray = Ray(self.center, pixel_center - self.center)
+                # pixel_center:np.ndarray = self.pixel_00_location + (i * self.pixel_delta_u) + (j * self.pixel_delta_v)
+                # ray = Ray(self.center, pixel_center - self.center)
 
-                self.pixels[j, i] = utils.write_color(self.ray_color(ray))
+                # self.pixels[j, i] = utils.write_color(self.ray_color(ray))
 
-                _progress_bar.update(1)
+                # _progress_bar.update(1)
+                pixel_color:np.ndarray = np.array([0.0, 0.0, 0.0]) # Initial pixel color. Will be defined as the average of samples!
+
+                # For each predefined sample, generates a ray and calculates its color contribution, updating initial_color value
+                for sample in range(0, self.samples_per_pixel):
+                    ray = self.sample_ray(i, j)
+                    pixel_color += self.ray_color(ray)
+                    _progress_bar.update(1)
+            
+                avg_samples_color:np.ndarray =  np.divide(pixel_color, self.samples_per_pixel)
+            
+                self.pixels[j, i] = utils.write_color(avg_samples_color)
+
 
         # NOTE: Maybe put this in other function
         image = Image.fromarray(self.pixels)
@@ -72,16 +89,28 @@ class Camera:
         hit:Hit | None = self.world.get_nearest_hit(ray)
 
         if hit:
-            # print(f"a")
-            # n = normalize(ray.at(hit) - np.array([0.0, 0.0, -1.0]))
             return 0.5 * np.array([
                 hit.normal[0] + 1,
                 hit.normal[1] + 1,
                 hit.normal[2] + 1,
             ])
-            # return 0.5 * (hit.normal + np.array([1.0, 1.0, 1.0]))
         else:
-            # print(f"b")
             return np.array([0.0, 0.0, 0.0])
+
+
+    def sample_ray(self, pixel_i:int, pixel_j:int) -> Ray:
+        """
+        Generates a random ray with origin at the camera center and direction to the surrounding of current pixel (i, j)
+        The direction point is randomly chosen by a uniform distribution function
+        """
+        offset:np.ndarray = utils.sample_square()
+
+        pixel_sample:np.ndarray = (
+            self.pixel_00_location
+            + ((pixel_i + offset[0]) * self.pixel_delta_u)
+            + ((pixel_j + offset[1]) * self.pixel_delta_v)
+        )
+
+        return Ray(self.center, pixel_sample - self.center)
 
     
