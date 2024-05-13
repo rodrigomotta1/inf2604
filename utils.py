@@ -4,6 +4,7 @@ import random
 
 HIT_TOLERANCE = 1e-6
 
+
 def degrees_to_radians(degrees:float) -> float:
     return degrees * math.pi / 180.0
 
@@ -35,3 +36,17 @@ def sample_square() -> np.ndarray:
         random.uniform(0, 1) - 0.5,
         0.0
     ])
+
+def distance(point_a:np.ndarray, point_b:np.ndarray) -> float:
+    """
+    Returns distnace between point_a and point_b.
+    In other words, the magnitude of the vector point_a - point_b.
+    """
+    return float(np.linalg.norm(point_a - point_b))
+
+def reflect(vector:np.ndarray, ref:np.ndarray) -> np.ndarray:
+    """
+    Returns a vector reflected along given ref
+    """
+    # r = 2(n . l)*n - l
+    return ((2 * np.dot(ref, vector)) * ref) - vector
