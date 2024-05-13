@@ -31,7 +31,7 @@ class Material():
             color = color + (self.color * self.ambient)
 
             for light in world.lights:
-                light_intensity, light_dir = light.radiance(hit)
+                light_intensity, light_dir = light.radiance(world, hit)
 
                 # Diffuse
                 color = color + (self.color * self.diffuse * light_intensity * max(0, np.dot(hit.normal, light_dir)))
