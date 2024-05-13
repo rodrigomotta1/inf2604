@@ -3,7 +3,7 @@ import utils
 import color as colors
 
 class Material():
-    def __init__(self, color:np.ndarray, diffuse:float, specular:float, shininess:float, ambient:float = 0.05,  debug:bool = False) -> None:
+    def __init__(self, color:np.ndarray, diffuse:float, specular:float, shininess:float, ambient:float = 0.005,  debug:bool = False) -> None:
         self.diffuse = diffuse
         self.specular = specular
         self.ambient = ambient
