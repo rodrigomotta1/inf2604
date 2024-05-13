@@ -1,12 +1,15 @@
 import time
 
 from hit import Hit
-
+from typing import List
+from hittable import Hittable
+from light import Light
 
 class World:
-    def __init__(self, hittables: list) -> None:
-        self.hittables = hittables
-        # TODO: save camera object to get its center and calculate hit distance
+    def __init__(self, hittables: List[Hittable], lights: List[Light]) -> None:
+        # NOTE: maybe save camera object to get its center and calculate hit distance
+        self.hittables = hittables + lights
+        self.lights = lights
 
     def get_nearest_hit(self, ray) -> Hit | None:
         neareast_hit = None
