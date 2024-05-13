@@ -2,7 +2,7 @@ import math
 import numpy as np
 import random
 
-HIT_TOLERANCE = 1e-5
+HIT_TOLERANCE = 1e-6
 
 def degrees_to_radians(degrees:float) -> float:
     return degrees * math.pi / 180.0
