@@ -50,3 +50,4 @@ def reflect(vector:np.ndarray, ref:np.ndarray) -> np.ndarray:
     """
     # r = 2(n . l)*n - l
     return ((2 * np.dot(ref, vector)) * ref) - vector
+    # return vector - 2 * np.dot(ref, vector) * ref

@@ -15,11 +15,11 @@ def main():
         hittables=[
             Hittable(
                 surface=Sphere(np.array([0.0, 0.0, -2.0]), 0.5),
-                material=Material(colors.RED, 0.2, 0.5, 2.0, debug=False)
+                material=Material(colors.RED, 0.2, 0.5, 50.0, debug=False)
             ),
             Hittable(
                 surface=Sphere(np.array([2.0, 2.0, -3.0]), 0.5),
-                material=Material(colors.GREEN, 0.1, 0.5, 2.0, debug=False)
+                material=Material(colors.GREEN, 0.1, 0.5, 50.0, debug=False)
             ),
             Hittable(
                 surface=Plane(np.array([0.0, 0.5, 0.0]), np.array([0.0, 1.0, 0.0])),

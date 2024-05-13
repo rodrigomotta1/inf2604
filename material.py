@@ -3,7 +3,7 @@ import utils
 import color as colors
 
 class Material():
-    def __init__(self, color:np.ndarray, diffuse:float, specular:float, shininess:float, ambient:float = 0.005,  debug:bool = False) -> None:
+    def __init__(self, color:np.ndarray, diffuse:float, specular:float, shininess:float, ambient:float = 0.2,  debug:bool = False) -> None:
         self.diffuse = diffuse
         self.specular = specular
         self.ambient = ambient
@@ -36,6 +36,11 @@ class Material():
                 # Diffuse
                 color = color + (self.color * self.diffuse * light_intensity * max(0, np.dot(hit.normal, light_dir)))
 
+
+                # Specular
+                reflected_light_dir = utils.normalize(utils.reflect(light_dir, hit.normal))
+
+                color = color + (light.color * self.specular * light_intensity * pow(max(0, np.dot(reflected_light_dir, viewer_direction)), self.shininess))
             
             # implementation logic..
 
