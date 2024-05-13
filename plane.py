@@ -13,7 +13,7 @@ class Plane:
     def __repr__(self) -> str:
         return f"[Plane] point={self.point} normal={self.normal}"
     
-    def intersects(self, ray:Ray) -> None | Hit:
+    def intersects(self, hittable:object, ray:Ray) -> None | Hit:
         denominator:float = np.dot(ray.direction, self.normal)
 
         if np.abs(denominator) < HIT_TOLERANCE:
@@ -31,4 +31,4 @@ class Plane:
             is_backface:bool = np.dot(ray.direction, self.normal) > 0
             # distance_to_eye = float(np.linalg.norm(point - ray.origin)) # TODO: CHECK THIS IF ANY ERROR
 
-            return Hit(point, self.normal, is_backface)
+            return Hit(point, self.normal, is_backface, hittable, root)

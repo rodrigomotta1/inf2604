@@ -18,7 +18,7 @@ class Sphere:
     def __repr__(self) -> str:
         return f"[Sphere] center={self.center} radius={self.radius}"
     
-    def intersects(self, ray:Ray) -> None | Hit:
+    def intersects(self, hittable:object, ray:Ray) -> None | Hit:
         """
         Checks if given ray intersects with self defined surface
         Returns None if no hit is detected
@@ -49,7 +49,9 @@ class Sphere:
             return Hit(
                 point=hit_point,
                 normal=normal_at_hit,
-                backface=is_backface
+                backface=is_backface,
+                instance=hittable,
+                t=root_min
             )
 
         

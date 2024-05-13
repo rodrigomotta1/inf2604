@@ -89,11 +89,12 @@ class Camera:
         hit:Hit | None = self.world.get_nearest_hit(ray)
 
         if hit:
-            return 0.5 * np.array([
-                hit.normal[0] + 1,
-                hit.normal[1] + 1,
-                hit.normal[2] + 1,
-            ])
+            # return 0.5 * np.array([
+            #     hit.normal[0] + 1,
+            #     hit.normal[1] + 1,
+            #     hit.normal[2] + 1,
+            # ])
+            return hit.instance.material.eval(self.world, hit, ray)
         else:
             return np.array([0.0, 0.0, 0.0])
 
