@@ -19,7 +19,7 @@ class Plane:
         if abs(denominator) < HIT_TOLERANCE:
             return None
         else:
-            ray_plane_point = ray.origin - self.point
+            ray_plane_point = self.point - ray.origin
 
             root:float = np.dot(ray_plane_point, self.normal) / denominator
 
