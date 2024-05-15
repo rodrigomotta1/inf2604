@@ -16,7 +16,7 @@ class Plane:
     def intersects(self, hittable:object, ray:Ray) -> None | Hit:
         denominator:float = np.dot(ray.direction, self.normal)
 
-        if np.abs(denominator) < HIT_TOLERANCE:
+        if abs(denominator) < HIT_TOLERANCE:
             return None
         else:
             ray_plane_point = ray.origin - self.point
