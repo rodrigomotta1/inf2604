@@ -1,4 +1,5 @@
 import utils
+import color as colors
 import numpy as np
 
 from hit import Hit
@@ -6,6 +7,7 @@ from PIL import Image
 from ray import Ray
 from tqdm import tqdm
 from world import World
+from light import Light
 
 # NOTE: Maybe create a function to get position of pixel based on input i, j (function receives pixel position i, j and returns its 3D position)
 class Camera:
@@ -14,9 +16,9 @@ class Camera:
             world:World,
             aspect_ratio:float = 4.0 / 3.0,
             width:int = 400,
-            center:np.ndarray = np.array([0.0, 0.0, 0.0]),
+            center:np.ndarray = np.array([0.0, 0.0, 1.0]),
             focal_lenght:float = 1.0,
-            samples_per_pixel:int = 10,
+            samples_per_pixel:int = 1,
 
         ) -> None:
         # Default data
@@ -86,17 +88,16 @@ class Camera:
 
 
     def ray_color(self, ray:Ray) -> np.ndarray:
-        hit:Hit | None = self.world.get_nearest_hit(ray)
+        intersection:Hit | Light | None = self.world.get_nearest_hit(ray)
 
-        if hit:
-            # return 0.5 * np.array([
-            #     hit.normal[0] + 1,
-            #     hit.normal[1] + 1,
-            #     hit.normal[2] + 1,
-            # ])
-            return hit.instance.material.eval(self.world, hit, ray)
+        if isinstance(intersection, Hit):
+            return intersection.instance.material.eval(self.world, intersection, ray)
+        
+        elif isinstance(intersection, Light):
+            return intersection.color
+        
         else:
-            return np.array([0.0, 0.0, 0.0])
+            return colors.BLACK
 
 
     def sample_ray(self, pixel_i:int, pixel_j:int) -> Ray:
@@ -112,6 +113,6 @@ class Camera:
             + ((pixel_j + offset[1]) * self.pixel_delta_v)
         )
 
-        return Ray(self.center, pixel_sample - self.center)
+        return Ray(self.center, utils.normalize(pixel_sample - self.center))
 
     

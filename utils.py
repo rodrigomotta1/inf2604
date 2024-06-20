@@ -22,7 +22,13 @@ def normalize(vector:np.ndarray) -> np.ndarray:
     """
     Receives a arbitrary vector and returns its normalized version
     """
-    return vector / np.linalg.norm(vector)
+    norm:float = float(np.linalg.norm(vector))
+
+    # If nomr is almost 0, then its not possible to normalize the vector, so return itself 
+    if norm < HIT_TOLERANCE:
+        return vector
+    else:
+        return vector / np.linalg.norm(vector)
 
 
 def sample_square() -> np.ndarray:

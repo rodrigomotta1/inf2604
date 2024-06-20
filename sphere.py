@@ -40,12 +40,16 @@ class Sphere:
             root_min:float = (-b - math.sqrt(delta)) / (2.0 * a)
             root_max:float = (-b + math.sqrt(delta)) / (2.0 * a)
 
-            if root_min < 0:
+            if root_max < HIT_TOLERANCE and root_min < HIT_TOLERANCE:
+                return None
+            
+            root = min(root_min, root_max) if root_min > HIT_TOLERANCE else root_max
+            if root < HIT_TOLERANCE:
                 return None
             
 
             # NOTE: Always draw the normal outwards surfaces!
-            hit_point:      np.ndarray      = ray.at(root_min)  
+            hit_point:      np.ndarray      = ray.at(root)  
             normal_at_hit:  np.ndarray      = normalize((hit_point - self.center) / self.radius)
             is_backface:    bool            = np.dot(ray.direction, normal_at_hit) < 0
 

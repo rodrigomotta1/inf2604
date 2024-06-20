@@ -2,6 +2,8 @@ import numpy as np
 import utils
 import color as colors
 
+from world import World
+
 class Material():
     def __init__(self, color:np.ndarray, diffuse:float, specular:float, shininess:float, ambient:float = 0.2,  debug:bool = False) -> None:
         self.diffuse = diffuse
@@ -11,7 +13,7 @@ class Material():
         self.color = color
         self.debug = debug
     
-    def eval(self, world, hit, ray):
+    def eval(self, world:World, hit, ray):
         """
         Evaluate material color considering traced ray, world lights and hit informations.
         """
@@ -35,7 +37,6 @@ class Material():
 
                 # Diffuse
                 color = color + (self.color * self.diffuse * light_intensity * max(0, np.dot(hit.normal, light_dir)))
-
 
                 # Specular
                 reflected_light_dir = utils.normalize(utils.reflect(light_dir, hit.normal))
