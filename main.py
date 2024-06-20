@@ -18,7 +18,7 @@ def main():
                 material=Material(colors.RED, 0.1, 0.5, 50.0, debug=False)
             ),
             Hittable(
-                surface=Sphere(np.array([0.0, 0.0, -1.5]), 0.5),
+                surface=Sphere(np.array([0.0, 0.0, -1.0]), 0.5),
                 material=Material(colors.GREEN, 0.1, 0.5, 50.0, debug=False)
             ),
             Hittable(
@@ -41,7 +41,11 @@ def main():
     )
 
     # Cam
-    camera = Camera(world=world)
+    camera = Camera(
+        world=world,
+        center=np.array([3.5, 0.0, -1.5]),
+        look_at=np.array([0.0, 0.0, -1.5])
+    )
 
     camera.render()
 

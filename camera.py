@@ -14,6 +14,8 @@ class Camera:
     def __init__(
             self, 
             world:World,
+            look_at:np.ndarray = np.array([0.0, 0.0, 0.0]),
+            up:np.ndarray = np.array([0.0, 1.0, 0.0]),
             aspect_ratio:float = 4.0 / 3.0,
             width:int = 400,
             center:np.ndarray = np.array([0.0, 0.0, 1.0]),
@@ -27,6 +29,8 @@ class Camera:
         self.aspect_ratio = aspect_ratio
         self.center = center
         self.focal_length = focal_lenght
+        self.look_at = look_at
+        self.up = up
 
         # Sampling rate
         self.samples_per_pixel = samples_per_pixel
@@ -40,16 +44,23 @@ class Camera:
         # Create pixel matrix
         self.pixels = np.zeros((self.height, self.width, 3), dtype=np.uint8)
 
+        # Calculate the orthonormal basis vectors for the camera orientation
+        self.z_axis = utils.normalize(self.center - self.look_at)
+        self.x_axis = utils.normalize(np.cross(self.up, self.z_axis))
+        self.y_axis = np.cross(self.x_axis, self.z_axis)
+
         # Calculate vector across the horizontal and down the vertical viewport edges
-        self.viewport_u:np.ndarray = np.array([self.viewport_width, 0.0, 0.0])
-        self.viewport_v:np.ndarray = np.array([0.0, -self.viewport_height, 0.0])
+        # # self.viewport_u:np.ndarray = np.array([self.viewport_width, 0.0, 0.0])
+        # self.viewport_v:np.ndarray = np.array([0.0, -self.viewport_height, 0.0])
+        self.viewport_u:np.ndarray = self.viewport_width * self.x_axis
+        self.viewport_v:np.ndarray = self.viewport_height * self.y_axis
 
         # Calculate the horizontal and vertical delta vectors from pixel to pixel
         self.pixel_delta_u:np.ndarray = self.viewport_u / self.width
         self.pixel_delta_v:np.ndarray = self.viewport_v / self.height
 
         # Calculate location of upper left pixel
-        self.viewport_upper_left:np.ndarray = self.center - np.array([0.0, 0.0, focal_lenght]) - self.viewport_u/2 - self.viewport_v/2
+        self.viewport_upper_left:np.ndarray = self.center - (self.focal_length * self.z_axis) - self.viewport_u/2 - self.viewport_v/2
 
         self.pixel_00_location:np.ndarray = self.viewport_upper_left + 0.5 * (self.pixel_delta_u + self.pixel_delta_v)
 
