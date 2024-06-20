@@ -36,15 +36,15 @@ def main():
             )
         ],
         lights=[
-            Light(np.array([0.0, 2.5, 0.5]), 50.0)
+            Light(np.array([0.0, 2.0, -1.5]), 50.0)
         ]
     )
 
     # Cam
     camera = Camera(
         world=world,
-        center=np.array([3.5, 0.0, -1.5]),
-        look_at=np.array([0.0, 0.0, -1.5])
+        center=np.array([0.0, 0.0, 1.0]),
+        look_at=np.array([0.0, 0.0, 0.0])
     )
 
     camera.render()
