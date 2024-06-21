@@ -38,7 +38,7 @@ class Camera:
             width:int = 400,
             center:np.ndarray = np.array([0.0, 0.0, 1.0]),
             focal_lenght:float = 1.0,
-            samples_per_pixel:int = 20,
+            samples_per_pixel:int = 15,
 
         ) -> None:
         # Default data
