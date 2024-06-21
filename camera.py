@@ -9,7 +9,25 @@ from tqdm import tqdm
 from world import World
 from light import Light
 
-# NOTE: Maybe create a function to get position of pixel based on input i, j (function receives pixel position i, j and returns its 3D position)
+from multiprocessing import Pool, cpu_count
+
+# Função auxiliar para inicializar cada processo com o objeto self
+def _init_process(camera):
+    global global_camera
+    global_camera = camera
+
+# Função global para processar um único pixel
+def _process_pixel(pixel_coords):
+    i, j = pixel_coords
+    pixel_color = np.array([0.0, 0.0, 0.0])
+
+    for sample in range(global_camera.samples_per_pixel):
+        ray = global_camera.sample_ray(i, j)
+        pixel_color += global_camera.ray_color(ray)
+
+    avg_samples_color = np.divide(pixel_color, global_camera.samples_per_pixel)
+    return j, i, utils.write_color(avg_samples_color)
+
 class Camera:
     def __init__(
             self, 
@@ -20,7 +38,7 @@ class Camera:
             width:int = 400,
             center:np.ndarray = np.array([0.0, 0.0, 1.0]),
             focal_lenght:float = 1.0,
-            samples_per_pixel:int = 1,
+            samples_per_pixel:int = 20,
 
         ) -> None:
         # Default data
@@ -65,35 +83,25 @@ class Camera:
         self.pixel_00_location:np.ndarray = self.viewport_upper_left + 0.5 * (self.pixel_delta_u + self.pixel_delta_v)
 
 
-    def render(self, output_filepath:str = "output.png") -> None:
-        """
-        Cast rays and evaluates each color through auxiliary utility function
-        """
-        _t_iter:int = self.height * self.width * self.samples_per_pixel
-        _progress_bar = tqdm(total=_t_iter, desc="Progress", unit="iter")
+    def render(self, output_filepath="output.png") -> None:
+        _t_iter = self.height * self.width * self.samples_per_pixel
+        # _progress_bar = tqdm(total=_t_iter, desc="Progress", unit="iter")
 
-        for j in range(0, self.height):
-            for i in range(0, self.width):
-                # pixel_center:np.ndarray = self.pixel_00_location + (i * self.pixel_delta_u) + (j * self.pixel_delta_v)
-                # ray = Ray(self.center, pixel_center - self.center)
+        # Gerar coordenadas de pixel para cada pixel na imagem
+        pixel_coords = [(i, j) for j in range(self.height) for i in range(self.width)]
 
-                # self.pixels[j, i] = utils.write_color(self.ray_color(ray))
+        # Usar multiprocessing para processar os pixels em paralelo
+        with Pool(processes=cpu_count(), initializer=_init_process, initargs=(self,)) as pool:
+            # Mapear a função process_pixel para os pixels
+            results = pool.imap(_process_pixel, pixel_coords, chunksize=100)
 
+            # Iterar sobre os resultados para atualizar a matriz de pixels e a barra de progresso
+            for result in tqdm(results, total=len(pixel_coords), desc="Rendering"):
+                j, i, color = result
+                self.pixels[j, i] = color
                 # _progress_bar.update(1)
-                pixel_color:np.ndarray = np.array([0.0, 0.0, 0.0]) # Initial pixel color. Will be defined as the average of samples!
 
-                # For each predefined sample, generates a ray and calculates its color contribution, updating initial_color value
-                for sample in range(0, self.samples_per_pixel):
-                    ray = self.sample_ray(i, j)
-                    pixel_color += self.ray_color(ray)
-                    _progress_bar.update(1)
-            
-                avg_samples_color:np.ndarray =  np.divide(pixel_color, self.samples_per_pixel)
-            
-                self.pixels[j, i] = utils.write_color(avg_samples_color)
-
-
-        # NOTE: Maybe put this in other function
+        # Salvar a imagem renderizada
         image = Image.fromarray(self.pixels)
         image.save(output_filepath)
 
