@@ -1,3 +1,4 @@
+import numpy as np
 import utils
 
 from hit import Hit
@@ -7,6 +8,7 @@ from light import Light
 
 class World:
     def __init__(self, hittables: List[Hittable], lights: List[Light]) -> None:
+        # NOTE: maybe save camera object to get its center and calculate hit distance
         self.hittables = hittables
         self.lights = lights
         self.objects = self.hittables + self.lights
@@ -24,10 +26,9 @@ class World:
                     # If its not, than current is the nearest
                     nearest_hit = current_hit
                 else:
-                    # If its defined already, then define nearest as current hit based on its distance to origin
+                # If its defined already, then define nearest as current hit based on its distance to origin
                     current_hit_distance = 0.0
 
-                    # TODO: Enhance this code by changing position to point or otherwise
                     if isinstance(current_hit, Light):
                         current_hit_distance = utils.distance(current_hit.position, ray.origin)
                     elif isinstance(current_hit, Hit):
