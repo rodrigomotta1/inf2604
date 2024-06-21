@@ -1,50 +1,17 @@
 import numpy as np
-import color as colors
 
-from sphere import Sphere
-from world import World
-from hittable import Hittable
-from plane import Plane
 from camera import Camera
-from light import Light
-from material import Material
+from scenes import balls, cornell_box
+
 
 
 def main():
-    world = World(
-        hittables=[
-            Hittable(
-                surface=Sphere(np.array([-1.5, 0.0, -1.5]), 0.5),
-                material=Material(colors.RED, 0.1, 0.5, 70.0, debug=False)
-            ),
-            Hittable(
-                surface=Sphere(np.array([0.0, 0.0, -1.5]), 0.5),
-                material=Material(colors.GREEN, 0.1, 0.5, 70.0, debug=False)
-            ),
-            Hittable(
-                surface=Sphere(np.array([1.5, 0.0, -1.5]), 0.5),
-                material=Material(colors.BLUE, 0.1, 0.5, 70.0, debug=False)
-            ),
-            Hittable(
-                surface=Plane(np.array([0.0, -0.5, 0.0]), np.array([0.0, 1.0, 0.0])),
-                material=Material(np.array([0.7, 0.7, 0.7]), 0.2, 0.5, 1000.0, debug=False)
-            ),
-            Hittable(
-                surface=Plane(np.array([0.0, -0.5, -4.0]), np.array([0.0, 0.0, 1.0])),
-                material=Material(np.array([0.7, 0.7, 0.7]), 0.2, 0.5, 1000.0, debug=False)
-            ),
-        ],
-        lights=[
-            Light(np.array([0.0, 2.0, -1.5]), 38.0),
-            Light(np.array([6.0, 2.0, -1.5]), 48.0),
-        ]
-    )
-
-    # Cam
+    
     camera = Camera(
-        world=world,
-        center=np.array([0.0, 0.0, 1.0]),
-        look_at=np.array([0.0, 0.0, 0.0])
+        world=cornell_box,
+        center=np.array([2.775, 3.2, 12.775]),
+        look_at=np.array([2.775, 2.775, 2.775]),
+        fov=50
     )
 
     camera.render()

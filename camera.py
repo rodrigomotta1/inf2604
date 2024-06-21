@@ -39,6 +39,7 @@ class Camera:
             center:np.ndarray = np.array([0.0, 0.0, 1.0]),
             focal_lenght:float = 1.0,
             samples_per_pixel:int = 15,
+            fov:float = 90.0
 
         ) -> None:
         # Default data
@@ -49,27 +50,30 @@ class Camera:
         self.focal_length = focal_lenght
         self.look_at = look_at
         self.up = up
+        self.fov = fov
+        self.height:int = int(self.width / self.aspect_ratio)
+
+        # Create pixel matrix
+        self.pixels = np.zeros((self.height, self.width, 3), dtype=np.uint8)
 
         # Sampling rate
         self.samples_per_pixel = samples_per_pixel
         self._pixel_samples_scale = 1.0 / self.samples_per_pixel
-
-        # Determine viewport dimensions
-        self.height:int = int(self.width / self.aspect_ratio)
-        self.viewport_height:float = 2.0
-        self.viewport_width:float = self.viewport_height * (float(self.width) / self.height)
-
-        # Create pixel matrix
-        self.pixels = np.zeros((self.height, self.width, 3), dtype=np.uint8)
 
         # Calculate the orthonormal basis vectors for the camera orientation
         self.z_axis = utils.normalize(self.center - self.look_at)
         self.x_axis = utils.normalize(np.cross(self.up, self.z_axis))
         self.y_axis = np.cross(self.x_axis, self.z_axis)
 
+        # Determine viewport dimensions based on fov
+        theta:float = np.radians(self.fov)
+        half_height:float = np.tan(theta / 2)
+        # self.viewport_height:float = 2.0
+        # self.viewport_width:float = self.viewport_height * (float(self.width) / self.height)
+        self.viewport_height = 2.0 * half_height
+        self.viewport_width = aspect_ratio * self.viewport_height
+
         # Calculate vector across the horizontal and down the vertical viewport edges
-        # # self.viewport_u:np.ndarray = np.array([self.viewport_width, 0.0, 0.0])
-        # self.viewport_v:np.ndarray = np.array([0.0, -self.viewport_height, 0.0])
         self.viewport_u:np.ndarray = self.viewport_width * self.x_axis
         self.viewport_v:np.ndarray = self.viewport_height * self.y_axis
 
