@@ -1,6 +1,5 @@
 import numpy as np
 import math
-import time
 
 from ray import Ray
 from hit import Hit
@@ -24,7 +23,6 @@ class Sphere:
         Returns None if no hit is detected
         Returns a Hit object with hit information if its detected
         """
-        # TODO: Check how to accept roots in a given interval HIT_TOLERANCE
 
         oc:     np.ndarray  = self.center - ray.origin
         a:      float       = np.dot(ray.direction, ray.direction)

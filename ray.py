@@ -5,8 +5,6 @@ from utils import normalize
 class Ray:
     def __init__(self, origin:np.ndarray, direction:np.ndarray) -> None:
         self.origin = origin
-        # self.direction = normalize(direction)
-        # self.raw_direction = direction
         self.direction = normalize(direction)
     
     def __repr__(self) -> str:

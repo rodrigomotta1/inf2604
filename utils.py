@@ -1,3 +1,7 @@
+"""
+Utility function module
+"""
+
 import math
 import numpy as np
 import random

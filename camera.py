@@ -9,7 +9,7 @@ from tqdm import tqdm
 from world import World
 from light import Light
 
-# NOTE: Maybe create a function to get position of pixel based on input i, j (function receives pixel position i, j and returns its 3D position)
+
 class Camera:
     def __init__(
             self, 
@@ -36,7 +36,7 @@ class Camera:
         self.samples_per_pixel = samples_per_pixel
         self._pixel_samples_scale = 1.0 / self.samples_per_pixel
 
-        # Determine viewport dimensions
+        # Define viewport dimensions
         self.height:int = int(self.width / self.aspect_ratio)
         self.viewport_height:float = 2.0
         self.viewport_width:float = self.viewport_height * (float(self.width) / self.height)
@@ -50,8 +50,6 @@ class Camera:
         self.y_axis = np.cross(self.x_axis, self.z_axis)
 
         # Calculate vector across the horizontal and down the vertical viewport edges
-        # # self.viewport_u:np.ndarray = np.array([self.viewport_width, 0.0, 0.0])
-        # self.viewport_v:np.ndarray = np.array([0.0, -self.viewport_height, 0.0])
         self.viewport_u:np.ndarray = self.viewport_width * self.x_axis
         self.viewport_v:np.ndarray = self.viewport_height * self.y_axis
 
@@ -74,15 +72,8 @@ class Camera:
 
         for j in range(0, self.height):
             for i in range(0, self.width):
-                # pixel_center:np.ndarray = self.pixel_00_location + (i * self.pixel_delta_u) + (j * self.pixel_delta_v)
-                # ray = Ray(self.center, pixel_center - self.center)
+                pixel_color:np.ndarray = colors.BLACK
 
-                # self.pixels[j, i] = utils.write_color(self.ray_color(ray))
-
-                # _progress_bar.update(1)
-                pixel_color:np.ndarray = np.array([0.0, 0.0, 0.0]) # Initial pixel color. Will be defined as the average of samples!
-
-                # For each predefined sample, generates a ray and calculates its color contribution, updating initial_color value
                 for sample in range(0, self.samples_per_pixel):
                     ray = self.sample_ray(i, j)
                     pixel_color += self.ray_color(ray)
@@ -99,6 +90,10 @@ class Camera:
 
 
     def ray_color(self, ray:Ray) -> np.ndarray:
+        """
+        Trigger color evaluation if ray hits anything (light source or hittable object)
+        If no intersection is found, then return black as color
+        """
         intersection:Hit | Light | None = self.world.get_nearest_hit(ray)
 
         if isinstance(intersection, Hit):
