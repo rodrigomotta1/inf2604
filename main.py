@@ -26,14 +26,13 @@ def main():
                 material=Material(colors.BLUE, 0.1, 0.5, 70.0, debug=False)
             ),
             Hittable(
-                surface=Sphere(np.array([0.0, 0.8, -0.6]), 0.5),
-                material=Material(colors.YELLOW, 0.1, 0.5, 70.0, debug=False)
-            ),
-            Hittable(
                 surface=Plane(np.array([0.0, -0.5, 0.0]), np.array([0.0, 1.0, 0.0])),
                 material=Material(np.array([0.7, 0.7, 0.7]), 0.2, 0.5, 1000.0, debug=False)
-                # material=Material(colors.WHITE, 0.2, 0.5, 2.0, debug=False)
-            )
+            ),
+            Hittable(
+                surface=Plane(np.array([0.0, -0.5, -4.0]), np.array([0.0, 0.0, 1.0])),
+                material=Material(np.array([0.7, 0.7, 0.7]), 0.2, 0.5, 1000.0, debug=False)
+            ),
         ],
         lights=[
             Light(np.array([0.0, 2.0, -1.5]), 38.0),
