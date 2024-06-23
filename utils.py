@@ -58,10 +58,25 @@ def reflect(vector:np.ndarray, ref:np.ndarray) -> np.ndarray:
     """
     Returns a vector reflected along given ref
     """
-    return ((2 * np.dot(ref, vector)) * ref) - vector
+    # return ((2 * np.dot(ref, vector)) * ref) - vector
+    return vector - 2 * np.dot(vector, ref) * ref
 
-def refract():
-    raise NotImplementedError()
+def refract(v: np.ndarray, n: np.ndarray, ior: float) -> np.ndarray:
+    cosi = max(-1, min(1, np.dot(v, n)))
+    etai = 1
+    etat = ior
+    if cosi < 0:
+        cosi = -cosi
+    else:
+        etai, etat = etat, etai
+        n = -n
+    eta = etai / etat
+    k = 1 - eta ** 2 * (1 - cosi ** 2)
+    if k < 0:
+        return np.zeros(3)
+    else:
+        return eta * v + (eta * cosi - np.sqrt(k)) * n
+
     
     
 

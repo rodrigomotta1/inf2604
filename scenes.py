@@ -14,6 +14,12 @@ red_glossy = Material(colors.RED, 0.1, 0.5, 70.0, debug=False)
 green_glossy = Material(colors.GREEN, 0.1, 0.5, 70.0, debug=False)
 blue_glossy = Material(colors.BLUE, 0.1, 0.5, 70.0, debug=False)
 gray_glossy = Material(colors.WHITE, 0.1, 0.001, 70.0, debug=False)
+blue_metal = Material(colors.BLUE, 0.1, 0.001, 70, reflection=0.5)
+gray_metal = Material(colors.WHITE, 0.1, 0.001, 70, reflection=0.5)
+green_metal = Material(colors.GREEN, 0.1, 0.001, 70, reflection=0.5)
+red_metal = Material(colors.RED, 0.1, 0.001, 70, reflection=0.5)
+gray_transparent = Material(colors.WHITE, 0.1, 0.001, 70, reflection=0.0, refraction=0.7, ior=1.5)
+
 
 small_box_surface = surface=Box(
     np.array([0.0, 0.0, 0.0]), 
@@ -86,12 +92,12 @@ cornell_box = World(
         # Small box
         Hittable(
             surface=small_box_surface,
-            material=gray_glossy
+            material=gray_metal
         ),
         # Big box
         Hittable(
             surface=big_box_surface,
-            material=gray_glossy
+            material=gray_metal
         ),
     ],
     lights=[

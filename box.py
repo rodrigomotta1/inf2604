@@ -43,7 +43,7 @@ class Box:
         world_normal:np.ndarray = np.linalg.inv(self.transform[:3, :3]).T @ local_normal
 
         is_backface:bool = np.dot(ray.direction, world_normal) > 0
-        world_normal = -world_normal if is_backface else world_normal
+        # world_normal = -world_normal if is_backface else world_normal
 
         return Hit(world_hit_point[:3], world_normal, is_backface, instance=hittable, t=t_hit)
 
@@ -91,31 +91,6 @@ class Box:
         self.transform = rotation_matrix @ self.transform
 
         return self
-    
-    def apply_transform(self) -> None:
-        # Transform the corners of the box
-        corners = [
-            self.min_corner,
-            [self.min_corner[0], self.min_corner[1], self.max_corner[2]],
-            [self.min_corner[0], self.max_corner[1], self.min_corner[2]],
-            [self.min_corner[0], self.max_corner[1], self.max_corner[2]],
-            [self.max_corner[0], self.min_corner[1], self.min_corner[2]],
-            [self.max_corner[0], self.min_corner[1], self.max_corner[2]],
-            [self.max_corner[0], self.max_corner[1], self.min_corner[2]],
-            self.max_corner
-        ]
-
-        transformed_corners = []
-        for corner in corners:
-            transformed_corner = self.transform @ np.append(corner, 1)
-            transformed_corners.append(transformed_corner[:3])
-
-        transformed_corners = np.array(transformed_corners)
-
-        self.min_corner = np.min(transformed_corners, axis=0)
-        self.max_corner = np.max(transformed_corners, axis=0)
-
-        self.transform = np.eye(4)  # Reset transform matrix
 
 # # Criação de uma caixa
 # min_corner = np.array([-1.0, -1.0, -1.0])
@@ -134,7 +109,7 @@ class Box:
 # hit = box.intersects(box, ray)
 
 # if hit:
-#     print(f"Interseção detectada em {hit.point} com a normal {hit.normal}")
+#     print(f"Interseção detectada em {hit.position} com a normal {hit.normal}")
 #     print(f"Backface: {hit.backface}")
 # else:
 #     print("Nenhuma interseção detectada")

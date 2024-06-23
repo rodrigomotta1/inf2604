@@ -15,15 +15,15 @@ class Light:
         self.color = color
     
     def radiance(self, world, hit:Hit) -> Tuple[float, np.ndarray]:
-        light_dir:np.ndarray = utils.normalize(self.position - hit.point)
-        shadow_origin:np.ndarray = hit.point + utils.HIT_TOLERANCE * hit.normal
+        light_dir:np.ndarray = utils.normalize(self.position - hit.position)
+        shadow_origin:np.ndarray = hit.position + utils.HIT_TOLERANCE * hit.normal
 
         shadow_ray:Ray = Ray(shadow_origin, light_dir)
 
         shadow_intersection: Hit | Light | None = world.get_nearest_hit(shadow_ray)
         
         if shadow_intersection is self:
-            r:float = utils.distance(hit.point, self.position)
+            r:float = utils.distance(hit.position, self.position)
             light_intensity:float = self.power / pow(r, 2)
 
             return light_intensity, light_dir

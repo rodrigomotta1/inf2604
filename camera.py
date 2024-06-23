@@ -23,7 +23,7 @@ def _process_pixel(pixel_coords):
 
     for sample in range(global_camera.samples_per_pixel):
         ray = global_camera.sample_ray(i, j)
-        pixel_color += global_camera.ray_color(ray)
+        pixel_color += global_camera.ray_color(ray, depth=4)
 
     avg_samples_color = np.divide(pixel_color, global_camera.samples_per_pixel)
     return j, i, utils.write_color(avg_samples_color)
@@ -38,7 +38,7 @@ class Camera:
             width:int = 400,
             center:np.ndarray = np.array([0.0, 0.0, 1.0]),
             focal_lenght:float = 1.0,
-            samples_per_pixel:int = 15,
+            samples_per_pixel:int = 12,
             fov:float = 90.0
 
         ) -> None:
@@ -88,33 +88,27 @@ class Camera:
 
 
     def render(self, output_filepath="output.png") -> None:
-        _t_iter = self.height * self.width * self.samples_per_pixel
-        # _progress_bar = tqdm(total=_t_iter, desc="Progress", unit="iter")
-
-        # Gerar coordenadas de pixel para cada pixel na imagem
         pixel_coords = [(i, j) for j in range(self.height) for i in range(self.width)]
 
-        # Usar multiprocessing para processar os pixels em paralelo
         with Pool(processes=cpu_count(), initializer=_init_process, initargs=(self,)) as pool:
-            # Mapear a função process_pixel para os pixels
             results = pool.imap(_process_pixel, pixel_coords, chunksize=100)
 
-            # Iterar sobre os resultados para atualizar a matriz de pixels e a barra de progresso
             for result in tqdm(results, total=len(pixel_coords), desc="Rendering"):
                 j, i, color = result
                 self.pixels[j, i] = color
-                # _progress_bar.update(1)
 
-        # Salvar a imagem renderizada
         image = Image.fromarray(self.pixels)
         image.save(output_filepath)
 
 
-    def ray_color(self, ray:Ray) -> np.ndarray:
+    def ray_color(self, ray:Ray, depth:int) -> np.ndarray:
+        if depth <= 0:
+            return colors.BLACK
+        
         intersection:Hit | Light | None = self.world.get_nearest_hit(ray)
 
         if isinstance(intersection, Hit):
-            return intersection.instance.material.eval(self.world, intersection, ray)
+            return intersection.instance.material.eval(self.world, intersection, ray, depth, self)
         
         elif isinstance(intersection, Light):
             return intersection.color
