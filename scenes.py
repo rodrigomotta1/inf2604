@@ -1,5 +1,6 @@
 import numpy as np
 import color as colors
+import utils
 
 from world import World
 from sphere import Sphere
@@ -12,18 +13,18 @@ from box import Box
 red_glossy = Material(colors.RED, 0.1, 0.5, 70.0, debug=False)
 green_glossy = Material(colors.GREEN, 0.1, 0.5, 70.0, debug=False)
 blue_glossy = Material(colors.BLUE, 0.1, 0.5, 70.0, debug=False)
-gray_glossy = Material(np.array([0.7, 0.7, 0.7]), 0.1, 0.5, 70.0, debug=False)
-
-# small_box_surface = surface=Box(
-#                 np.array([-0.1, -0.1, 0.0]), 
-#                 np.array([5.65, 0, 5.55])
-#             ).translate(np.array([3.4, 1.2, 3.65])).rotate(np.array([0.0, 1.0, 0.0]), -18.0)
-
+gray_glossy = Material(colors.WHITE, 0.1, 0.001, 70.0, debug=False)
 
 small_box_surface = surface=Box(
-                np.array([-0.1, -0.1, 0.0]), 
-                np.array([5.65, 0, 5.55])
-            )
+    np.array([0.0, 0.0, 0.0]), 
+    np.array([1.65, 1.65, 1.65])
+).translate(np.array([3.8, 0.0, 1.5])).rotate(-18, utils.Y_AXIS)
+
+
+big_box_surface = surface=Box(
+    np.array([0.0, 0.0, 0.0]),
+    np.array([1.65, 3.3, 1.65])
+).translate(np.array([0.15, 0.0, 1.5])).rotate(22.5, utils.Y_AXIS)
 
 
 balls = World(
@@ -87,9 +88,14 @@ cornell_box = World(
             surface=small_box_surface,
             material=gray_glossy
         ),
+        # Big box
+        Hittable(
+            surface=big_box_surface,
+            material=gray_glossy
+        ),
     ],
     lights=[
-        Light(np.array([2.775, 5.45, 2.775]), 38.0),
+        Light(np.array([2.775, 5.46, 2.775]), 38.0),
         # Light(np.array([1.65, 1.65, 0.3]), 38.0),
     ]
 )

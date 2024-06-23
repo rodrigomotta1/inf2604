@@ -4,6 +4,10 @@ import random
 
 HIT_TOLERANCE = 1e-6
 
+X_AXIS = np.array([1.0, 0.0, 0.0])
+Y_AXIS = np.array([0.0, 1.0, 0.0])
+Z_AXIS = np.array([0.0, 0.0, 1.0])
+
 
 def degrees_to_radians(degrees:float) -> float:
     return degrees * math.pi / 180.0
@@ -54,6 +58,12 @@ def reflect(vector:np.ndarray, ref:np.ndarray) -> np.ndarray:
     """
     Returns a vector reflected along given ref
     """
-    # r = 2(n . l)*n - l
     return ((2 * np.dot(ref, vector)) * ref) - vector
-    # return vector - 2 * np.dot(ref, vector) * ref
+
+def refract():
+    raise NotImplementedError()
+    
+    
+
+
+
