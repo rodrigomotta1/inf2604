@@ -88,9 +88,16 @@ class Camera:
 
 
     def render(self, output_filepath="output.png") -> None:
-        pixel_coords = [(i, j) for j in range(self.height) for i in range(self.width)]
+        pixel_coords = [
+            (i, j) for j in range(self.height) for i in range(self.width)
+        ]
 
-        with Pool(processes=cpu_count(), initializer=_init_process, initargs=(self,)) as pool:
+        with Pool(
+                processes=cpu_count(), 
+                initializer=_init_process, 
+                initargs=(self,)
+            ) as pool:
+
             results = pool.imap(_process_pixel, pixel_coords, chunksize=100)
 
             for result in tqdm(results, total=len(pixel_coords), desc="Rendering"):
@@ -108,7 +115,13 @@ class Camera:
         intersection:Hit | Light | None = self.world.get_nearest_hit(ray)
 
         if isinstance(intersection, Hit):
-            return intersection.instance.material.eval(self.world, intersection, ray, depth, self)
+            return intersection.instance.material.eval(
+                self.world, 
+                intersection, 
+                ray, 
+                depth, 
+                self
+            )
         
         elif isinstance(intersection, Light):
             return intersection.color
@@ -119,8 +132,11 @@ class Camera:
 
     def sample_ray(self, pixel_i:int, pixel_j:int) -> Ray:
         """
-        Generates a random ray with origin at the camera center and direction to the surrounding of current pixel (i, j)
-        The direction point is randomly chosen by a uniform distribution function
+        Generates a random ray with origin at the camera center and direction 
+        to the surrounding of current pixel (i, j).
+        
+        The direction point is randomly chosen by a uniform distribution
+        function.
         """
         offset:np.ndarray = utils.sample_square()
 

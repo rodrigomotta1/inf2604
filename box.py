@@ -91,25 +91,3 @@ class Box:
         self.transform = rotation_matrix @ self.transform
 
         return self
-
-# # Criação de uma caixa
-# min_corner = np.array([-1.0, -1.0, -1.0])
-# max_corner = np.array([1.0, 1.0, 1.0])
-# box = Box(min_corner, max_corner)
-
-# # Aplicando transformações encadeadas
-# box.translate(np.array([2.0, 3.0, 1.0])).rotate(45, np.array([0.0, 1.0, 0.0]))
-
-# # Criação de um raio
-# origin = np.array([0.0, 0.0, 0.0])
-# direction = np.array([1.0, 1.0, 1.0])
-# ray = Ray(origin, direction)
-
-# # Checando interseção
-# hit = box.intersects(box, ray)
-
-# if hit:
-#     print(f"Interseção detectada em {hit.position} com a normal {hit.normal}")
-#     print(f"Backface: {hit.backface}")
-# else:
-#     print("Nenhuma interseção detectada")

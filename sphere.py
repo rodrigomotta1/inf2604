@@ -35,8 +35,8 @@ class Sphere:
         # If no real root, no hit
         if delta < 0:
             return None
+        
         else:
-            # NOTE: The first hit of ray into the surface is always the lesser positive root value (in this specific case) -> need to be checked in the future
             root_min:float = (-b - math.sqrt(delta)) / (2.0 * a)
             root_max:float = (-b + math.sqrt(delta)) / (2.0 * a)
 
@@ -55,7 +55,7 @@ class Sphere:
 
             
             return Hit(
-                point=hit_point,
+                position=hit_point,
                 normal=normal_at_hit,
                 backface=is_backface,
                 instance=hittable,
