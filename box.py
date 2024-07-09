@@ -43,7 +43,6 @@ class Box:
         world_normal:np.ndarray = np.linalg.inv(self.transform[:3, :3]).T @ local_normal
 
         is_backface:bool = np.dot(ray.direction, world_normal) > 0
-        # world_normal = -world_normal if is_backface else world_normal
 
         return Hit(world_hit_point[:3], world_normal, is_backface, instance=hittable, t=t_hit)
 

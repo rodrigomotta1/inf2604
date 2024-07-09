@@ -58,7 +58,6 @@ def reflect(vector:np.ndarray, ref:np.ndarray) -> np.ndarray:
     """
     Returns a vector reflected along given ref
     """
-    # return ((2 * np.dot(ref, vector)) * ref) - vector
     return vector - 2 * np.dot(vector, ref) * ref
 
 def refract(v: np.ndarray, n: np.ndarray, ior: float) -> np.ndarray:

@@ -24,7 +24,6 @@ def _process_pixel(pixel_coords):
     for sample in range(global_camera.samples_per_pixel):
         ray = global_camera.sample_ray(i, j)
         pixel_color += global_camera.path_color(ray, depth=4)
-        # pixel_color += global_camera.ray_color(ray, depth=4)
 
     avg_samples_color = np.divide(pixel_color, global_camera.samples_per_pixel)
     return j, i, utils.write_color(avg_samples_color)
@@ -69,8 +68,6 @@ class Camera:
         # Determine viewport dimensions based on fov
         theta:float = np.radians(self.fov)
         half_height:float = np.tan(theta / 2)
-        # self.viewport_height:float = 2.0
-        # self.viewport_width:float = self.viewport_height * (float(self.width) / self.height)
         self.viewport_height = 2.0 * half_height
         self.viewport_width = aspect_ratio * self.viewport_height
 
@@ -157,7 +154,6 @@ class Camera:
             n = intersection.normal
 
             Le = self.world.get_light_radiance(intersection)
-            # print(f"(d={i}) Le: {Le} | brdf: {material.brdf()} | beta: {beta}")
 
             L += (Le * material.brdf()) * beta
 
@@ -170,7 +166,6 @@ class Camera:
             beta *= material.brdf() * max(0.0, np.dot(n, w_i)) / pdf
 
             current_ray = Ray(p, w_i)
-            # print(L)
 
         return L
 

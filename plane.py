@@ -29,6 +29,5 @@ class Plane:
 
             point:np.ndarray = ray.at(root)
             is_backface:bool = denominator > 0
-            # distance_to_eye = float(np.linalg.norm(point - ray.origin)) # TODO: CHECK THIS IF ANY ERROR
 
             return Hit(point, self.normal, is_backface, hittable, root)

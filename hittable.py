@@ -6,5 +6,3 @@ class Hittable:
 
     def intersects(self, ray):
         return self.surface.intersects(self, ray)
-    
-    # def eval(self, )
