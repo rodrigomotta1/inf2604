@@ -36,7 +36,7 @@ big_box_surface = surface=Box(
 balls = World(
         hittables=[
             Hittable(
-                surface=Sphere(np.array([-1.5, 0.0, -1.5]), 0.5),
+                surface=Sphere(np.array([-1.1, 0.0, -1.5]), 0.5),
                 material=red_glossy
             ),
             Hittable(
@@ -44,7 +44,7 @@ balls = World(
                 material=green_glossy
             ),
             Hittable(
-                surface=Sphere(np.array([1.5, 0.0, -1.5]), 0.5),
+                surface=Sphere(np.array([1.1, 0.0, -1.5]), 0.5),
                 material=blue_glossy
             ),
             Hittable(
@@ -57,8 +57,10 @@ balls = World(
             ),
         ],
         lights=[
-            Light(np.array([0.0, 2.0, -1.5]), 38.0),
-            Light(np.array([6.0, 2.0, -1.5]), 48.0),
+            # Light(np.array([0.0, 2.0, -1.5]), 38.0),
+            # Light(np.array([6.0, 2.0, -1.5]), 48.0),
+            Light(np.array([0.0, 2.0, -1.5]), 3.8),
+            Light(np.array([6.0, 2.0, -1.5]), 4.8),
         ]
     )
 
@@ -101,7 +103,7 @@ cornell_box = World(
         ),
     ],
     lights=[
-        Light(np.array([2.775, 5.46, 2.775]), 38.0),
+        Light(np.array([2.775, 5.46, 2.775]), 3.0),
         # Light(np.array([1.65, 1.65, 0.3]), 38.0),
     ]
 )

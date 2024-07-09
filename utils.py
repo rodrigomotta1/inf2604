@@ -78,7 +78,29 @@ def refract(v: np.ndarray, n: np.ndarray, ior: float) -> np.ndarray:
         return eta * v + (eta * cosi - np.sqrt(k)) * n
 
     
+def normal_to_global(normal:np.ndarray):
+    """
+    Converte uma direção normal ao plano de um hemisfério para uma direção global.
     
-
-
+    Parâmetros:
+    - normal: Um vetor normal ao plano do hemisfério, normalizado para ter comprimento unitário.
+    
+    Retorna:
+    - Uma direção global aleatória no hemisfério, também normalizada.
+    """
+    # Gera um ângulo de elevação aleatório entre 0 e π
+    theta = np.arccos(np.random.uniform(-1, 1))
+    
+    # Gera um ângulo azimutal aleatório entre 0 e 2π
+    phi = 2 * np.pi * np.random.uniform(0, 1)
+    
+    # Calcula os componentes x, y, z da direção global
+    x = np.sin(theta) * np.cos(phi)
+    y = np.sin(theta) * np.sin(phi)
+    z = np.cos(theta)
+    
+    # Normaliza a direção global para ter comprimento unitário
+    global_direction = np.array([x, y, z]) / np.linalg.norm(np.array([x, y, z]))
+    
+    return global_direction
 

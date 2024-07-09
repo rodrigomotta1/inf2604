@@ -11,7 +11,8 @@ def main():
         world=cornell_box,
         center=np.array([2.775, 3.2, 12.775]),
         look_at=np.array([2.775, 2.775, 2.775]),
-        fov=50
+        fov=50,
+        samples_per_pixel=64
     )
 
     camera.render()

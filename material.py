@@ -75,3 +75,25 @@ class Material():
 
 
             return color
+        
+    def brdf(self) -> np.ndarray:
+        # Constant BRDF
+        return 0.7 * self.color
+    
+    def get_sample(self) -> np.ndarray:
+        """
+        Generates sample in hemisphere with respect to surface
+        Considering diffuse material only
+        """
+        phi = np.random.uniform(0, 2 * np.pi)
+        costheta = np.sqrt(np.random.uniform(0, 1))
+        theta = np.arccos(costheta)
+
+        u = np.sin(theta) * np.cos(phi)
+        v = np.sin(theta) * np.sin(phi)
+        w = np.cos(theta)
+
+        return np.array([u, v, w])
+    
+    def get_pdf(self, w_ih:np.ndarray) -> float:
+        return 1.0 / (2 * np.pi)

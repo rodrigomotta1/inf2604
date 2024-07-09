@@ -23,7 +23,8 @@ def _process_pixel(pixel_coords):
 
     for sample in range(global_camera.samples_per_pixel):
         ray = global_camera.sample_ray(i, j)
-        pixel_color += global_camera.ray_color(ray, depth=4)
+        pixel_color += global_camera.path_color(ray, depth=4)
+        # pixel_color += global_camera.ray_color(ray, depth=4)
 
     avg_samples_color = np.divide(pixel_color, global_camera.samples_per_pixel)
     return j, i, utils.write_color(avg_samples_color)
@@ -38,7 +39,7 @@ class Camera:
             width:int = 400,
             center:np.ndarray = np.array([0.0, 0.0, 1.0]),
             focal_lenght:float = 1.0,
-            samples_per_pixel:int = 12,
+            samples_per_pixel:int = 24,
             fov:float = 90.0
 
         ) -> None:
@@ -98,7 +99,7 @@ class Camera:
                 initargs=(self,)
             ) as pool:
 
-            results = pool.imap(_process_pixel, pixel_coords, chunksize=100)
+            results = pool.imap(_process_pixel, pixel_coords, chunksize=2)
 
             for result in tqdm(results, total=len(pixel_coords), desc="Rendering"):
                 j, i, color = result
@@ -129,6 +130,49 @@ class Camera:
         else:
             return colors.BLACK
 
+    def path_color(self, ray:Ray, depth:int) -> np.ndarray:
+        """
+        Evaluates color for path that start with given ray
+        """
+        L = np.array([0.0, 0.0, 0.0])
+        beta = np.array([1.0, 1.0, 1.0])
+
+        current_ray = ray
+
+        for i in range(depth):
+            intersection = self.world.get_nearest_hit(current_ray)
+
+            if intersection is None:
+                break
+
+            if isinstance(intersection, Light):
+                if i == 0:
+                    return intersection.color
+                
+                break
+
+            material = intersection.instance.material
+
+            p = intersection.position
+            n = intersection.normal
+
+            Le = self.world.get_light_radiance(intersection)
+            # print(f"(d={i}) Le: {Le} | brdf: {material.brdf()} | beta: {beta}")
+
+            L += (Le * material.brdf()) * beta
+
+            w_ih = material.get_sample()
+
+            pdf = material.get_pdf(w_ih)
+
+            w_i = utils.normal_to_global(w_ih)
+
+            beta *= material.brdf() * max(0.0, np.dot(n, w_i)) / pdf
+
+            current_ray = Ray(p, w_i)
+            # print(L)
+
+        return L
 
     def sample_ray(self, pixel_i:int, pixel_j:int) -> Ray:
         """
@@ -147,5 +191,3 @@ class Camera:
         )
 
         return Ray(self.center, utils.normalize(pixel_sample - self.center))
-
-    

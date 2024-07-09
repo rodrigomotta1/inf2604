@@ -27,3 +27,23 @@ class World:
                         nearest_hit = current_hit
         
         return nearest_hit
+    
+    def get_light_radiance(self, hit:Hit):
+        """
+        Returns total light radiance at given hit point
+        """
+        # Inicializa a radiação luminosa total como zero
+        radiance_total = np.array([0.0, 0.0, 0.0])
+        
+        # Itera sobre todas as fontes de luz na cena
+        for light in self.lights:
+            # Calcula a direção do vetor de luz
+            light_intensity, light_dir = light.radiance(self, hit)
+            
+            # Calcula a radiação luminosa incidente
+            radiance = light_intensity * np.dot(light_dir, hit.normal)
+            
+            # Adiciona a radiação luminosa da luz atual à radiação total
+            radiance_total += radiance
+        
+        return radiance_total
